@@ -1,10 +1,14 @@
 {
 	"name": "daisy-calendar",
 	"version": "0.1.0",
-	"private": true,
+	"private": false,
+	"author": "pugongying<390871804@qq.com>",
+	"description": "vue-toast-tests test",
+	"main": "dist/calendar.min.js",
+	"keyword": "calendar,vue-calendar",
 	"scripts": {
 		"serve": "vue-cli-service serve",
-		"build": "vue-cli-service build",
+		"build": "vue-cli-service build --target lib --name calendar src/plugins/index.js",
 		"test:unit": "vue-cli-service test:unit",
 		"lint": "vue-cli-service lint"
 	},

@@ -1,11 +1,18 @@
 <template>
-	<div id="app">123123</div>
+	<div id="app">
+		<div style="height:300px;width:100%">
+			<calendar :firstDay="12"> </calendar>
+		</div>
+	</div>
 </template>
 
 <script>
+import calendar from "./plugins/calendar.vue";
 export default {
-	name: "App",
-	components: {}
+	components: {
+		calendar
+	},
+	name: "App"
 };
 </script>
 
