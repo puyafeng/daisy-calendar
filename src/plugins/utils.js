@@ -1,5 +1,5 @@
 export default {
-	calcMonthMatrix(seedDate = new Date(), weekStart = 0) {
+	calcMonthMatrix(seedDate = new Date(), weekStart = 1) {
 		//1.通过种子日期计算出本月第一天
 		let firstDateOfMonth = new Date(
 			seedDate.getFullYear(),
