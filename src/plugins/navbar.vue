@@ -1,8 +1,8 @@
 <template>
 	<div>
-		<button>上月</button>
-		<span>日期</span>
-		<button>下月</button>
+		<i class="icon iconfont icon-jiantou-zuo" @click="lastMonth"></i>
+		<span>{{ 123 }}</span>
+		<i class="icon iconfont icon-jiantou-you" @click="nextMonth"></i>
 	</div>
 </template>
 

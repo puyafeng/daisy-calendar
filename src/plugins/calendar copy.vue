@@ -1,43 +1,46 @@
 <template>
 	<div v-if="matrix" class="daisy-calendar__root">
 		<div class="daisy-calendar__nav">
-			<slot name="navbar">
-				<i class="icon iconfont icon-jiantou-zuo" @click="lastMonth"></i>
-				<span>{{
-					config.seedDate.getFullYear() +
-						"年" +
-						(config.seedDate.getMonth() + 1) +
-						"月"
-				}}</span>
-				<i class="icon iconfont icon-jiantou-you" @click="nextMonth"></i>
-			</slot>
+			<i class="icon iconfont icon-jiantou-zuo" @click="lastMonth"></i>
+			<span>{{
+				this.config.seedDate.getFullYear() +
+					"年" +
+					(this.config.seedDate.getMonth() + 1) +
+					"月"
+			}}</span>
+			<i class="icon iconfont icon-jiantou-you" @click="nextMonth"></i>
 		</div>
-		<div class="daisy-calendar__weekbar">
-			<div
-				v-for="day in 7"
-				:key="'week' + day"
-				class="daisy-calendar__weekbar-item daisy-calendar__border"
-			>
-				<div>
-					{{ config.mondayToSunday[day - 1] }}
+		<div class="daisy-calendar__main">
+			<div class="daisy-calendar__row">
+				<div v-for="day in 7" :key="'week' + day" class="daisy-calendar__item">
+					<div>
+						{{ config.mondayToSunday[day - 1] }}
+					</div>
 				</div>
 			</div>
-		</div>
-		<div class="daisy-calendar__panel">
+
 			<div
-				class="daisy-calendar__panel-row"
-				:key="rowIndex"
+				class="daisy-calendar__row"
 				v-for="(row, rowIndex) in matrix"
+				:key="rowIndex"
 			>
 				<div
-					class="daisy-calendar__panel-date daisy-calendar__border"
+					class="daisy-calendar__item"
+					v-for="(item, colIndex) in row"
 					:key="rowIndex + '-' + colIndex"
-					v-for="(date, colIndex) in row"
+					@click="clickDate(item)"
 				>
-					<slot :date="date" :seedDate="config.seedDate">
+					<slot :date="item" :seedDate="config.seedDate" :data="$data">
 						<div>
-							<div v-if="isSameMonth(date, config.seedDate)">
-								{{ date.getDate() }}
+							<div v-if="isSameMonth(item, config.seedDate)">
+								{{ item.getDate() }}
+								<div>
+									<slot
+										name="draw"
+										:extra="extraData(item)"
+										:date="item"
+									></slot>
+								</div>
 							</div>
 						</div>
 					</slot>
@@ -49,6 +52,7 @@
 
 <script>
 import utils from "./utils.js";
+import Vue from "vue";
 export default {
 	data() {
 		const defaultConfig = {
@@ -59,7 +63,7 @@ export default {
 		return {
 			defaultConfig,
 			config: { ...defaultConfig, ...this.$attrs },
-			selectDate: defaultConfig.seedDate,
+			selectDate: new Date(),
 			matrix: null,
 			box: {}
 		};
@@ -95,6 +99,9 @@ export default {
 		},
 		saveBox(date, data) {
 			this.box = { ...this.box, ...{ [date.toGMTString()]: data } };
+			// this.box[date.toGMTString()] = data;
+			// this.$set(this.box, date.toGMTString(), data);
+			// this.$forceUpdate();
 		},
 		nextMonth() {
 			this.changeMonth(1);
@@ -142,8 +149,16 @@ export default {
 			.map(index => {
 				return this.config.mondayToSunday[index - 1 < 0 ? 6 : index - 1];
 			});
+		// console.log(this.config.mondayToSunday);
 	},
 	watch: {
+		box: {
+			handler(newValue, oldValue) {
+				console.log(newValue);
+			},
+			deep: true, //深度遍历
+			immediate: true
+		},
 		"config.seedDate": {
 			handler(newValue, oldValue) {
 				if (
@@ -166,55 +181,40 @@ export default {
 </script>
 
 <style lang="scss">
-$font-color: #2c3e50;
-$border-color: #abc;
-$border: 1px solid $border-color;
 .daisy-calendar__root {
-	width: 100%;
-	height: 100%;
 	display: flex;
 	flex-direction: column;
-	border: $border;
+	height: 100%;
+	padding: 12px;
+	border: 1px solid #abc;
 	border-radius: 8px;
-	.daisy-calendar__nav {
-		// flex-basis: 40px;
+}
+.daisy-calendar__nav {
+	display: flex;
+	padding: 0 10px 10px 10px;
+	justify-content: space-between;
+	align-items: center;
+	i {
+		cursor: pointer;
+	}
+}
+.daisy-calendar__main {
+	// background-color: rgb(42, 66, 66);
+	flex: 1;
+	display: flex;
+	flex-direction: column;
+	.daisy-calendar__row {
 		flex: 1;
 		display: flex;
-		justify-content: space-between;
+		justify-content: center;
 		align-items: center;
-		i {
-			color: black;
-			cursor: pointer;
-		}
-	}
-	.daisy-calendar__weekbar {
-		flex: 1;
-		display: flex;
-		.daisy-calendar__weekbar-item {
-			flex: 1;
-			height: 100%;
-		}
-	}
-	.daisy-calendar__panel {
-		flex: 6;
-		.daisy-calendar__panel-row {
-			box-sizing: border-box;
-			width: 100%;
-			height: 16.66%;
+		.daisy-calendar__item {
 			display: flex;
-			.daisy-calendar__panel-date {
-				box-sizing: border-box;
-				flex: 1;
-			}
-		}
-	}
-	.daisy-calendar__border {
-		&:not(:last-child) {
-			border-top: $border;
-			border-right: $border;
-		}
-		&:last-child {
-			border-top: $border;
+			align-items: center;
+			justify-content: center;
+			width: 100%;
+			height: 100%;
+			flex: 1;
 		}
 	}
 }
