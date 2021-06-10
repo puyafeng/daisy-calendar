@@ -35,7 +35,11 @@
 							<div v-if="isSameMonth(item, config.seedDate)">
 								{{ item.getDate() }}
 								<div>
-									<slot name="draw" :extra="getExtraByDate(item)"></slot>
+									<slot
+										name="draw"
+										:extra="extraData(item)"
+										:date="item"
+									></slot>
 								</div>
 							</div>
 						</div>
@@ -48,6 +52,7 @@
 
 <script>
 import utils from "./utils.js";
+import Vue from "vue";
 export default {
 	data() {
 		const defaultConfig = {
@@ -62,6 +67,15 @@ export default {
 			matrix: null,
 			box: {}
 		};
+	},
+	computed: {
+		extraData() {
+			let self = this;
+			return date => {
+				console.log(date, self.box[date.toGMTString()]);
+				return self.box[date.toGMTString()];
+			};
+		}
 	},
 	methods: {
 		calcMonthMatrix(
@@ -84,7 +98,10 @@ export default {
 			);
 		},
 		saveBox(date, data) {
-			this.box[date.toGMTString()] = data;
+			this.box = { ...this.box, ...{ [date.toGMTString()]: data } };
+			// this.box[date.toGMTString()] = data;
+			// this.$set(this.box, date.toGMTString(), data);
+			// this.$forceUpdate();
 		},
 		nextMonth() {
 			this.changeMonth(1);
@@ -135,6 +152,13 @@ export default {
 		// console.log(this.config.mondayToSunday);
 	},
 	watch: {
+		box: {
+			handler(newValue, oldValue) {
+				console.log(newValue);
+			},
+			deep: true, //深度遍历
+			immediate: true
+		},
 		"config.seedDate": {
 			handler(newValue, oldValue) {
 				if (

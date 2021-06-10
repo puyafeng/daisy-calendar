@@ -2,15 +2,25 @@
 	<div id="app">
 		<div style="height:500px;width:500px">
 			<calendar @onDateChange="onDateChange" @onMonthChange="onMonthChange">
+				<!-- <template #default="{date,seedDate}">
+					<div style="color:black">
+						<div v-if="date.getMonth() === seedDate.getMonth()">
+							{{ date.getDate() }}
+						</div>
+						<div v-else style="color:#a0a0a0">
+							{{ date.getDate() }}
+						</div>
+					</div>
+				</template> -->
 				<template #draw="{extra}">
 					<div v-if="extra" style="width:40px;height:40px;">
 						<CircleProgress
 							:width="40"
 							:radius="2"
-							:progress="10"
+							:progress="extra"
 							:isAnimation="true"
 						>
-							<span style="font-size:12px">{{ extra }}%</span>
+							<span style="font-size:12px">{{ extra }}</span>
 						</CircleProgress>
 					</div>
 				</template>
