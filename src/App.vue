@@ -38,10 +38,10 @@
 
 <script>
 import calendar from "./plugins/calendar.vue";
-import dotDay from "./plugins/day/dot-day.vue";
-import cpDay from "./plugins/day/circle-progress-day";
-import animalDay from "./plugins/day/animal-day.vue";
-import panelDay from "./plugins/day/panel-day.vue";
+import dotDay from "./components/day/dot-day.vue";
+import cpDay from "./components/day/circle-progress-day";
+import animalDay from "./components/day/animal-day.vue";
+import panelDay from "./components/day/panel-day.vue";
 import _ from "lodash";
 export default {
 	components: {
