@@ -26,12 +26,12 @@
 		<div class="daisy-calendar__panel">
 			<div
 				class="daisy-calendar__panel-row"
-				:key="rowIndex"
+				:key="rowIndex + Math.random()"
 				v-for="(row, rowIndex) in matrix"
 			>
 				<div
 					class="daisy-calendar__panel-date daisy-calendar__border"
-					:key="rowIndex + '-' + colIndex"
+					:key="rowIndex + '-' + colIndex + Math.random()"
 					v-for="(date, colIndex) in row"
 					@click="clickDate(date)"
 				>
@@ -107,8 +107,12 @@ export default {
 			this.$emit(
 				"onMonthChange",
 				this.config.seedDate,
-				this.saveBox.bind(this)
+				this.saveBox.bind(this),
+				this.getFromBox.bind(this)
 			);
+		},
+		getFromBox(date) {
+			return this.box[date.toGMTString()];
 		},
 		saveBox(date, data) {
 			this.box = { ...this.box, ...{ [date.toGMTString()]: data } };
@@ -120,11 +124,22 @@ export default {
 			this.changeMonth(-1);
 		},
 		clickDate(date) {
+			this.$emit(
+				"onDateClick",
+				date,
+				this.saveBox.bind(this),
+				this.getFromBox.bind(this)
+			);
 			if (this.isSameDay(this.selectDate, date)) {
 				//点击来相同的时间
 			} else {
 				this.selectDate = date;
-				this.$emit("onDateChange", date);
+				this.$emit(
+					"onDateChange",
+					date,
+					this.saveBox.bind(this),
+					this.getFromBox.bind(this)
+				);
 			}
 		},
 		isSameDay(d1, d2) {
