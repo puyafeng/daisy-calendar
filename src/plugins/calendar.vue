@@ -1,7 +1,7 @@
 <template>
 	<div v-if="matrix" class="daisy-calendar__root">
 		<div class="daisy-calendar__nav">
-			<slot name="navbar">
+			<slot name="navbar" :seedDate="config.seedDate">
 				<i class="icon iconfont icon-jiantou-zuo" @click="lastMonth"></i>
 				<span>{{
 					config.seedDate.getFullYear() +
@@ -33,8 +33,18 @@
 					class="daisy-calendar__panel-date daisy-calendar__border"
 					:key="rowIndex + '-' + colIndex"
 					v-for="(date, colIndex) in row"
+					@click="clickDate(date)"
 				>
-					<slot :date="date" :seedDate="config.seedDate">
+					<slot
+						:date="date"
+						:seedDate="config.seedDate"
+						:data="data(date)"
+						:tool="{
+							isSameMonth: isSameMonth(date, config.seedDate),
+							isSelectDay: isSameDay(date, selectDate),
+							isToday: isSameDay(date, new Date())
+						}"
+					>
 						<div>
 							<div v-if="isSameMonth(date, config.seedDate)">
 								{{ date.getDate() }}
@@ -49,7 +59,15 @@
 
 <script>
 import utils from "./utils.js";
+let files = require.context("./day", false, /.*\.vue$/);
+let components = {};
+files.keys().forEach(key => {
+	components[key.replace(/\.\/(.*)\.vue/, "$1")] = files(key).default;
+});
 export default {
+	components: {
+		...components
+	},
 	data() {
 		const defaultConfig = {
 			seedDate: new Date(),
@@ -65,10 +83,9 @@ export default {
 		};
 	},
 	computed: {
-		extraData() {
+		data() {
 			let self = this;
 			return date => {
-				console.log(date, self.box[date.toGMTString()]);
 				return self.box[date.toGMTString()];
 			};
 		}
@@ -127,13 +144,8 @@ export default {
 		}
 	},
 	created() {
-		this.matrix = this.calcMonthMatrix();
-		console.log(
-			[0, 1, 2, 3, 4, 5, 6].map(ele => {
-				let rs = ele + this.config.startOfWeek;
-				return rs >= 7 ? rs - 7 : rs;
-			})
-		);
+		// this.matrix = this.calcMonthMatrix();
+		this.changeMonth(0);
 		this.config.mondayToSunday = [0, 1, 2, 3, 4, 5, 6]
 			.map(ele => {
 				let rs = ele + this.config.startOfWeek;
@@ -147,13 +159,14 @@ export default {
 		"config.seedDate": {
 			handler(newValue, oldValue) {
 				if (
+					!!!oldValue ||
 					newValue.getFullYear() !== oldValue.getFullYear() ||
 					newValue.getMonth() !== oldValue.getMonth()
 				) {
 					this.matrix = this.calcMonthMatrix();
 				}
 			},
-			immediate: false
+			immediate: true
 		},
 		"config.startOfWeek": {
 			handler(newValue, oldValue) {
@@ -167,23 +180,24 @@ export default {
 
 <style lang="scss">
 $font-color: #2c3e50;
-$border-color: #abc;
+$border-color: #2c3e50;
 $border: 1px solid $border-color;
 .daisy-calendar__root {
+	color: $font-color;
+	padding: 10px;
 	width: 100%;
 	height: 100%;
+	box-sizing: content-box;
 	display: flex;
 	flex-direction: column;
 	border: $border;
 	border-radius: 8px;
 	.daisy-calendar__nav {
-		// flex-basis: 40px;
 		flex: 1;
 		display: flex;
 		justify-content: space-between;
 		align-items: center;
 		i {
-			color: black;
 			cursor: pointer;
 		}
 	}
@@ -209,13 +223,14 @@ $border: 1px solid $border-color;
 		}
 	}
 	.daisy-calendar__border {
-		&:not(:last-child) {
-			border-top: $border;
-			border-right: $border;
-		}
-		&:last-child {
-			border-top: $border;
-		}
+		// &:not(:last-child) {
+		// 	border-top: $border;
+		// 	border-right: $border;
+		// }
+		// &:last-child {
+		// 	border-top: $border;
+		// }
+		border: none;
 	}
 }
 </style>
