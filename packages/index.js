@@ -1,4 +1,5 @@
 import calendar from "./calendar/index";
+import "./assets/iconfont/iconfont.css";
 const components = [calendar];
 const install = function(Vue) {
 	// 判断是否安装

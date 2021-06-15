@@ -1,4 +1,4 @@
-import calendar from "./src/calendar.vue";
+import calendar from "../calendar/src/calendar.vue";
 import "../assets/style/main.scss";
 import "../assets/iconfont/iconfont.css";
 calendar.install = function(Vue) {

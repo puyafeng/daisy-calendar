@@ -1,11 +1,14 @@
 {
 	"name": "daisy-calendar",
-	"version": "0.1.2",
+	"version": "0.1.8",
 	"private": false,
 	"author": "pugongying<390871804@qq.com>",
 	"description": "diy your calendar",
-	"main": "dist/calendar.min.js",
+	"main": "lib/daisy-calendar.umd.min.js",
 	"keyword": "calendar,vue-calendar",
+	"files": [
+		"lib/"
+	],
 	"scripts": {
 		"serve": "vue-cli-service serve",
 		"build": "vue-cli-service build --target lib --name daisy-calendar --dest lib packages/index.js",

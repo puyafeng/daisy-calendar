@@ -60,6 +60,7 @@
 <script>
 import utils from "./utils.js";
 export default {
+	name: "calendar",
 	data() {
 		const defaultConfig = {
 			seedDate: new Date(),
@@ -194,7 +195,7 @@ $border: 1px solid $border-color;
 	padding: 10px;
 	width: 100%;
 	height: 100%;
-	box-sizing: content-box;
+	box-sizing: border-box;
 	display: flex;
 	flex-direction: column;
 	border: $border;

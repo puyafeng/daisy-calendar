@@ -37,7 +37,7 @@
 </template>
 
 <script>
-import calendar from "./plugins/calendar.vue";
+import calendar from "../packages/calendar/src/calendar.vue";
 import dotDay from "./components/day/dot-day.vue";
 import cpDay from "./components/day/circle-progress-day";
 import animalDay from "./components/day/animal-day.vue";
