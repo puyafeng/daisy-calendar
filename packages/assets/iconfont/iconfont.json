@@ -1,0 +1,23 @@
+{
+  "id": "2603515",
+  "name": "calendar",
+  "font_family": "iconfont",
+  "css_prefix_text": "icon-",
+  "description": "",
+  "glyphs": [
+    {
+      "icon_id": "16421516",
+      "name": "箭头-右",
+      "font_class": "jiantou-you",
+      "unicode": "e631",
+      "unicode_decimal": 58929
+    },
+    {
+      "icon_id": "16421520",
+      "name": "箭头-左",
+      "font_class": "jiantou-zuo",
+      "unicode": "e632",
+      "unicode_decimal": 58930
+    }
+  ]
+}
