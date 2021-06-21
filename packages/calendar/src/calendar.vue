@@ -13,15 +13,28 @@
 			</slot>
 		</div>
 		<div class="daisy-calendar__weekbar">
-			<div
-				v-for="day in 7"
-				:key="'week' + day"
-				class="daisy-calendar__weekbar-item daisy-calendar__border"
+			<slot
+				name="weekbar"
+				:mondayToSunday="config.mondayToSunday"
+				:startOfWeek="config.startOfWeek"
+				:fullweek="config.fullweek"
 			>
-				<div>
-					{{ config.mondayToSunday[day - 1] }}
+				<div
+					v-for="day in 7"
+					:key="'week' + day"
+					class="daisy-calendar__weekbar-item daisy-calendar__border"
+				>
+					<slot
+						name="weekbarItem"
+						:mondayToSunday="config.mondayToSunday"
+						:startOfWeek="config.startOfWeek"
+						:fullweek="config.fullweek"
+						:weekdayName="config.fullweek[day - 1]"
+					>
+						{{ startOfWeek }}
+					</slot>
 				</div>
-			</div>
+			</slot>
 		</div>
 		<div class="daisy-calendar__panel">
 			<div
@@ -65,7 +78,8 @@ export default {
 		const defaultConfig = {
 			seedDate: new Date(),
 			startOfWeek: 1,
-			mondayToSunday: ["一", "二", "三", "四", "五", "六", "日"]
+			mondayToSunday: ["一", "二", "三", "四", "五", "六", "日"],
+			fullweek: []
 		};
 		return {
 			defaultConfig,
@@ -100,14 +114,14 @@ export default {
 			this.$emit(
 				"onMonthChange",
 				this.config.seedDate,
-				this.saveBox.bind(this),
-				this.getFromBox.bind(this)
+				this.inBox.bind(this),
+				this.outBox.bind(this)
 			);
 		},
-		getFromBox(date) {
+		outBox(date) {
 			return this.box[date.toGMTString()];
 		},
-		saveBox(date, data) {
+		inBox(date, data) {
 			this.box = { ...this.box, ...{ [date.toGMTString()]: data } };
 		},
 		nextMonth() {
@@ -120,8 +134,8 @@ export default {
 			this.$emit(
 				"onDateClick",
 				date,
-				this.saveBox.bind(this),
-				this.getFromBox.bind(this)
+				this.inBox.bind(this),
+				this.outBox.bind(this)
 			);
 			if (this.isSameDay(this.selectDate, date)) {
 				//点击来相同的时间
@@ -130,8 +144,8 @@ export default {
 				this.$emit(
 					"onDateChange",
 					date,
-					this.saveBox.bind(this),
-					this.getFromBox.bind(this)
+					this.inBox.bind(this),
+					this.outBox.bind(this)
 				);
 			}
 		},
@@ -154,7 +168,7 @@ export default {
 	created() {
 		// this.matrix = this.calcMonthMatrix();
 		this.changeMonth(0);
-		this.config.mondayToSunday = [0, 1, 2, 3, 4, 5, 6]
+		this.config.fullweek = [0, 1, 2, 3, 4, 5, 6]
 			.map(ele => {
 				let rs = ele + this.config.startOfWeek;
 				return rs >= 7 ? rs - 7 : rs;
@@ -192,7 +206,6 @@ $border-color: #2c3e50;
 $border: 1px solid $border-color;
 .daisy-calendar__root {
 	color: $font-color;
-	padding: 10px;
 	width: 100%;
 	height: 100%;
 	box-sizing: border-box;
@@ -227,17 +240,18 @@ $border: 1px solid $border-color;
 			.daisy-calendar__panel-date {
 				box-sizing: border-box;
 				flex: 1;
+				// border: 1px solid red;
 			}
 		}
 	}
 	.daisy-calendar__border {
-		// &:not(:last-child) {
-		// 	border-top: $border;
-		// 	border-right: $border;
-		// }
-		// &:last-child {
-		// 	border-top: $border;
-		// }
+		&:not(:last-child) {
+			border-top: $border;
+			border-right: $border;
+		}
+		&:last-child {
+			border-top: $border;
+		}
 		border: none;
 	}
 }
